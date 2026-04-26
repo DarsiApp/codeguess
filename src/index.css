@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    @apply font-body text-ink bg-cream antialiased;
+    background-image: radial-gradient(circle at 20% 10%, #f1e3c8 0, transparent 35%),
+      radial-gradient(circle at 80% 90%, #ead4af 0, transparent 30%);
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"><path d="M6 14c0-2 1-3 2.5-3s2.5 1 2.5 3v-5c0-1.5 1-2.5 2.5-2.5S16 7.5 16 9v6l1-1c1-1 3-1 3 1v5c0 3-2 6-6 6s-7-2-7-6Z" fill="%23fbf6ea" stroke="%235b3a22" stroke-width="1.5" stroke-linejoin="round"/></svg>')
+      4 2, auto;
+  }
+  html.dark body {
+    @apply text-parchment bg-nightcream;
+    background-image: radial-gradient(circle at 20% 10%, #2a1f17 0, transparent 35%),
+      radial-gradient(circle at 80% 90%, #3a2c1f 0, transparent 30%);
+  }
+  button,
+  a,
+  [role='button'] {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"><path d="M9 4c0-1.5 2.5-1.5 2.5 0v8c.5-1 1-1.5 2-1.5 1 0 1.5.5 1.5 1.5v.5c.5-1 1.2-1.4 2-1.4 1 0 1.5.6 1.5 1.6v1c.5-.8 1-1.2 1.7-1.2.9 0 1.3.7 1.3 1.7v5c0 3-2.3 5.5-5.5 5.5s-6-2.5-6-5.5V4Z" fill="%23c0673f" stroke="%235b3a22" stroke-width="1.5" stroke-linejoin="round"/></svg>')
+      6 2, pointer;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-display tracking-tight uppercase;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-3xl border-2 border-bark/20 bg-parchment/85 shadow-cottage backdrop-blur;
+  }
+  html.dark .card {
+    @apply border-parchment/15 bg-nightbeige/80;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-bark/30 px-5 py-3 font-bold uppercase tracking-wider shadow-cottageSm transition active:translate-y-[2px] active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-terracotta text-parchment border-clay hover:bg-clay;
+  }
+  .btn-secondary {
+    @apply btn bg-beige text-bark hover:bg-sand;
+  }
+  html.dark .btn-secondary {
+    @apply bg-nightsand text-parchment hover:bg-nightbeige;
+  }
+  .btn-ghost {
+    @apply btn bg-transparent border-bark/30 text-bark hover:bg-beige/60;
+  }
+  html.dark .btn-ghost {
+    @apply text-parchment hover:bg-nightsand/60;
+  }
+  .pill {
+    @apply inline-flex items-center gap-2 rounded-full border-2 border-bark/25 bg-parchment/80 px-3 py-1.5 text-sm font-bold uppercase tracking-wider shadow-cottageSm;
+  }
+  html.dark .pill {
+    @apply bg-nightbeige/80 border-parchment/15;
+  }
+  .slot {
+    @apply flex h-14 w-12 items-center justify-center rounded-xl border-2 border-bark/30 bg-parchment text-2xl font-display font-black uppercase shadow-cottageSm sm:h-16 sm:w-14 sm:text-3xl;
+  }
+  html.dark .slot {
+    @apply bg-nightbeige border-parchment/20;
+  }
+  .slot-active {
+    @apply ring-4 ring-terracotta/50;
+  }
+  .slot-exact {
+    @apply bg-leaf text-parchment border-moss;
+  }
+  .slot-hit {
+    @apply bg-sand text-bark border-clay/60;
+  }
+  .key {
+    @apply flex h-11 min-w-[2rem] flex-1 items-center justify-center rounded-lg border-2 border-bark/30 bg-parchment text-sm font-bold uppercase shadow-cottageSm sm:h-12 sm:text-base active:translate-y-[1px] active:shadow-none;
+  }
+  html.dark .key {
+    @apply bg-nightbeige border-parchment/15;
+  }
+  .input {
+    @apply w-full rounded-2xl border-2 border-bark/25 bg-parchment px-4 py-3 font-bold tracking-wider text-bark placeholder:text-bark/40 focus:outline-none focus:ring-4 focus:ring-terracotta/40;
+  }
+  html.dark .input {
+    @apply bg-nightbeige border-parchment/15 text-parchment placeholder:text-parchment/40;
+  }
+  .label {
+    @apply text-xs font-extrabold uppercase tracking-[0.18em] text-bark/70;
+  }
+  html.dark .label {
+    @apply text-parchment/70;
+  }
+}
