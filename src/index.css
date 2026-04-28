@@ -28,6 +28,27 @@
     background-blend-mode: multiply;
     filter: none;
   }
+  /* Endless diagonal pattern scroll, toggled by the home page via the
+     `scroll-bg` class on <html>. The CSS animation animates
+     background-position by exactly one tile (240x240) for a seamless loop. */
+  html.scroll-bg body {
+    animation: bgScrollDiag 28s linear infinite;
+    will-change: background-position;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html.scroll-bg body {
+      animation: none;
+    }
+    .animate-floaty,
+    .animate-breathe,
+    .animate-pageEnter,
+    .animate-bump,
+    .animate-pop,
+    .animate-slideUp,
+    .animate-fillSlot {
+      animation: none !important;
+    }
+  }
   h1,
   h2,
   h3 {

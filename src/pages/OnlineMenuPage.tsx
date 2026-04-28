@@ -33,7 +33,7 @@ export default function OnlineMenuPage() {
           <li key={t.to}>
             <Link
               to={t.to}
-              className={`flex items-center gap-4 rounded-3xl border-3 border-line p-5 shadow-nb transition-transform active:translate-x-[3px] active:translate-y-[3px] active:shadow-nbSm ${t.bg}`}
+              className={`flex items-center gap-4 rounded-3xl border-3 border-line p-5 shadow-nb transition-transform hover:-translate-y-1 active:translate-x-[3px] active:translate-y-[3px] active:shadow-nbSm ${t.bg}`}
             >
               <span className="text-3xl" aria-hidden>
                 {t.emoji}

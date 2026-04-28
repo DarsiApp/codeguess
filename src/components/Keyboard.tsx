@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import type { GuessFeedback } from '@/lib/score';
 
 const ROWS = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];
@@ -33,6 +33,18 @@ export default function Keyboard({
     return map;
   }, [history]);
 
+  // Lookup of button refs so hardware-keyboard presses can replay the same
+  // bump animation as a click — keeping the visual feedback consistent.
+  const refs = useRef<Map<string, HTMLButtonElement>>(new Map());
+
+  function bump(ch: string) {
+    const el = refs.current.get(ch);
+    if (!el) return;
+    el.classList.remove('animate-bump');
+    void el.offsetWidth; // restart the CSS animation
+    el.classList.add('animate-bump');
+  }
+
   useEffect(() => {
     if (disabled) return;
     function handler(e: KeyboardEvent) {
@@ -43,9 +55,12 @@ export default function Keyboard({
         onEnter();
       } else if (k === 'Backspace') {
         e.preventDefault();
+        bump('⌫');
         onBackspace();
       } else if (/^[a-zA-Z]$/.test(k)) {
-        onKey(k.toUpperCase());
+        const upper = k.toUpperCase();
+        bump(upper);
+        onKey(upper);
       }
     }
     window.addEventListener('keydown', handler);
@@ -62,6 +77,11 @@ export default function Keyboard({
     return '';
   }
 
+  function tap(ch: string) {
+    bump(ch);
+    onKey(ch);
+  }
+
   return (
     <div className="select-none space-y-2">
       {ROWS.slice(0, 2).map((row) => (
@@ -69,8 +89,12 @@ export default function Keyboard({
           {row.split('').map((ch) => (
             <button
               key={ch}
+              ref={(el) => {
+                if (el) refs.current.set(ch, el);
+                else refs.current.delete(ch);
+              }}
               className={`key ${tone(ch)}`}
-              onClick={() => onKey(ch)}
+              onClick={() => tap(ch)}
               disabled={disabled}
               type="button"
             >
@@ -83,8 +107,12 @@ export default function Keyboard({
         {ROWS[2].split('').map((ch) => (
           <button
             key={ch}
+            ref={(el) => {
+              if (el) refs.current.set(ch, el);
+              else refs.current.delete(ch);
+            }}
             className={`key ${tone(ch)}`}
-            onClick={() => onKey(ch)}
+            onClick={() => tap(ch)}
             disabled={disabled}
             type="button"
           >
@@ -92,8 +120,15 @@ export default function Keyboard({
           </button>
         ))}
         <button
+          ref={(el) => {
+            if (el) refs.current.set('⌫', el);
+            else refs.current.delete('⌫');
+          }}
           className="key min-w-[3rem] flex-[1.4]"
-          onClick={onBackspace}
+          onClick={() => {
+            bump('⌫');
+            onBackspace();
+          }}
           disabled={disabled}
           type="button"
           aria-label="Backspace"

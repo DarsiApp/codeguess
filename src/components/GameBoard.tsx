@@ -70,13 +70,18 @@ export default function GameBoard({
     <div className="space-y-5">
       {/* Status pill row -------------------------------------------------- */}
       <div className="flex flex-wrap items-center justify-center gap-2">
-        {modeLabel ? <span className="pill">{modeLabel}</span> : null}
-        <span className="pill">
+        {modeLabel ? (
+          <span className="pill animate-slideUp" style={{ animationDelay: '40ms' }}>
+            {modeLabel}
+          </span>
+        ) : null}
+        <span className="pill animate-slideUp" style={{ animationDelay: '120ms' }}>
           Guess {Math.min(guessCount + 1, guessLimitLabel)} / {guessLimitLabel}
         </span>
         <button
           type="button"
-          className="pill disabled:opacity-50"
+          className="pill animate-slideUp disabled:opacity-50"
+          style={{ animationDelay: '200ms' }}
           disabled={!onUseHint || hintsAvailable <= 0}
           onClick={onUseHint}
         >
@@ -126,7 +131,7 @@ export default function GameBoard({
         </button>
         <button
           type="button"
-          className="btn-sky"
+          className={`btn-sky ${current.length === length && !finished ? 'animate-breathe' : ''}`}
           onClick={submit}
           disabled={current.length !== length || finished || disabled}
         >

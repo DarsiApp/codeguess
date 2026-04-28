@@ -15,7 +15,7 @@ export default function PageShell({ title, back = true, children, header = 'back
     <div className="mx-auto flex min-h-full max-w-3xl flex-col px-4 pb-10 pt-4 sm:px-6 sm:pt-6">
       {header === 'global' ? <GlobalHeader /> : null}
       {header === 'back' ? <BackHeader title={title} back={back} /> : null}
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 animate-pageEnter">{children}</main>
     </div>
   );
 }

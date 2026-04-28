@@ -137,7 +137,7 @@ function Lobby({
     <div className="space-y-4">
       <section className="card p-5 text-center">
         <p className="label">Share this code</p>
-        <p className="mt-2 font-display text-4xl font-black tracking-[0.4em]">{room.code}</p>
+        <p className="mt-2 font-display text-4xl font-black tracking-[0.4em] animate-floaty">{room.code}</p>
         <p className="mt-1 text-xs font-bold text-muted">
           {room.isPublic ? 'Public · listed in Find game' : 'Private · code only'} ·{' '}
           {room.mode === 'word' ? 'Word mode' : 'Code mode'} ·{' '}
