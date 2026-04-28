@@ -28,10 +28,10 @@ export default function OnlineFindPage() {
   }
 
   return (
-    <PageShell title="Find game" back="/online">
+    <PageShell title="Find Game" back="/online">
       <div className="space-y-4">
-        <p className="text-sm text-bark/70 dark:text-parchment/70">
-          Open public lobbies waiting for players. Join one to take a turn at the secret.
+        <p className="text-center text-sm font-bold text-muted">
+          Open public lobbies waiting for players. Join one to take a turn.
         </p>
         {rooms.length === 0 ? (
           <div className="card p-8 text-center">
@@ -39,11 +39,11 @@ export default function OnlineFindPage() {
               🌾
             </p>
             <p className="mt-3 font-display text-lg font-black uppercase">All quiet right now</p>
-            <p className="mt-1 text-sm text-bark/70 dark:text-parchment/70">
+            <p className="mt-1 text-sm font-bold text-muted">
               No public rooms are open. Why not host one yourself?
             </p>
-            <button className="btn-primary mt-4" onClick={() => nav('/online/create')}>
-              Create a room
+            <button className="btn-sky mt-4" onClick={() => nav('/online/create')}>
+              Create a Room
             </button>
           </div>
         ) : (
@@ -51,19 +51,18 @@ export default function OnlineFindPage() {
             {rooms.map((r) => (
               <li key={r.code}>
                 <button
-                  className="flex w-full items-center justify-between gap-3 rounded-3xl border-2 border-bark/20 bg-parchment/85 p-4 text-left shadow-cottageSm transition hover:-translate-y-0.5 dark:border-parchment/15 dark:bg-nightbeige/80"
+                  className="flex w-full items-center justify-between gap-3 rounded-3xl border-3 border-line bg-paper p-4 text-left shadow-nb transition-transform active:translate-x-[3px] active:translate-y-[3px] active:shadow-nbSm"
                   onClick={() => join(r.code)}
                 >
                   <div className="min-w-0">
                     <p className="font-display text-lg font-black tracking-[0.25em]">{r.code}</p>
-                    <p className="truncate text-xs text-bark/70 dark:text-parchment/60">
-                      Hosted by {r.players[0]?.nickname ?? 'Host'} · {r.mode === 'word' ? 'Word' : 'Code'}
+                    <p className="truncate text-xs font-bold text-muted">
+                      Hosted by {r.players[0]?.nickname ?? 'Host'} ·{' '}
+                      {r.mode === 'word' ? 'Word' : 'Code'}
                       {r.allowRepeats ? ' · repeats' : ' · unique'}
                     </p>
                   </div>
-                  <span className="pill">
-                    👥 {r.players.length}/8
-                  </span>
+                  <span className="pill">👥 {r.players.length}/8</span>
                 </button>
               </li>
             ))}

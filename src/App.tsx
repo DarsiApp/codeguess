@@ -14,6 +14,9 @@ import RulesPage from '@/pages/RulesPage';
 import StatsPage from '@/pages/StatsPage';
 import SettingsPage from '@/pages/SettingsPage';
 import ShopPage from '@/pages/ShopPage';
+import AuthPage from '@/pages/AuthPage';
+import FriendsPage from '@/pages/FriendsPage';
+import ProfilePage from '@/pages/ProfilePage';
 import NotFoundPage from '@/pages/NotFoundPage';
 
 export default function App() {
@@ -34,6 +37,9 @@ export default function App() {
           <Route path="/stats" element={<StatsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/shop" element={<ShopPage />} />
+          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/friends" element={<FriendsPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </PlayerProvider>

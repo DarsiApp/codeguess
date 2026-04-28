@@ -27,8 +27,6 @@ export default function OnlineGamePage() {
   const me = useMemo(() => getOrInitPlayerId(), []);
   const [error, setError] = useState<string | null>(null);
 
-  // If I land on this page directly without ever being added (e.g. opened a
-  // shared link in a fresh browser), auto-join with my username.
   useEffect(() => {
     if (!room) return;
     if (!room.players.find((p) => p.id === me)) {
@@ -37,13 +35,11 @@ export default function OnlineGamePage() {
     }
   }, [room, code, me, username]);
 
-  // Subscribe to live updates from other tabs / players.
   useEffect(() => {
     const unsub = subscribeRoom(code, setRoom);
     return unsub;
   }, [code]);
 
-  // Tidy up when the user leaves while still in the lobby.
   useEffect(() => {
     return () => {
       const r = getRoom(code);
@@ -53,16 +49,16 @@ export default function OnlineGamePage() {
 
   if (!room) {
     return (
-      <PageShell title="Online game" back="/online">
+      <PageShell title="Online Game" back="/online">
         <section className="card p-8 text-center">
           <p className="text-3xl" aria-hidden>
             🍂
           </p>
           <p className="mt-3 font-display text-lg font-black uppercase">Room not found</p>
-          <p className="mt-1 text-sm text-bark/70 dark:text-parchment/70">
+          <p className="mt-1 text-sm font-bold text-muted">
             That code doesn't match any open room. It may have been closed.
           </p>
-          <Link to="/online" className="btn-primary mt-4 inline-flex">
+          <Link to="/online" className="btn-sky mt-4 inline-flex">
             Back to online menu
           </Link>
         </section>
@@ -90,17 +86,9 @@ export default function OnlineGamePage() {
   }
 
   return (
-    <PageShell
-      title={`Room ${room.code}`}
-      back="/online"
-      rightSlot={
-        <span className="pill" title="Players">
-          👥 {room.players.length}
-        </span>
-      }
-    >
+    <PageShell title={`Room ${room.code}`} back="/online">
       {error ? (
-        <p className="mb-3 rounded-xl border-2 border-clay/40 bg-clay/10 p-3 text-sm font-bold text-clay">
+        <p className="mb-3 rounded-2xl border-3 border-line bg-amber/30 p-3 text-sm font-extrabold uppercase">
           {error}
         </p>
       ) : null}
@@ -110,7 +98,13 @@ export default function OnlineGamePage() {
       ) : null}
       {room.status === 'playing' ? <Playing room={room} me={me} /> : null}
       {room.status === 'finished' ? (
-        <Finished room={room} me={me} isHost={isHost} onRematch={onRematch} onLeave={() => nav('/online')} />
+        <Finished
+          room={room}
+          me={me}
+          isHost={isHost}
+          onRematch={onRematch}
+          onLeave={() => nav('/online')}
+        />
       ) : null}
 
       <ChatPanel room={room} />
@@ -144,12 +138,12 @@ function Lobby({
       <section className="card p-5 text-center">
         <p className="label">Share this code</p>
         <p className="mt-2 font-display text-4xl font-black tracking-[0.4em]">{room.code}</p>
-        <p className="mt-1 text-xs text-bark/70 dark:text-parchment/60">
+        <p className="mt-1 text-xs font-bold text-muted">
           {room.isPublic ? 'Public · listed in Find game' : 'Private · code only'} ·{' '}
           {room.mode === 'word' ? 'Word mode' : 'Code mode'} ·{' '}
           {room.allowRepeats ? 'repeats' : 'unique'}
         </p>
-        <button className="btn-secondary mt-3" onClick={copyCode}>
+        <button className="btn-paper mt-3" onClick={copyCode}>
           {copied ? 'Copied!' : 'Copy code'}
         </button>
       </section>
@@ -160,15 +154,15 @@ function Lobby({
           {room.players.map((p, idx) => (
             <li
               key={p.id}
-              className="flex items-center justify-between rounded-2xl border-2 border-bark/15 bg-parchment/60 p-3 dark:border-parchment/10 dark:bg-nightbeige/60"
+              className="flex items-center justify-between rounded-2xl border-3 border-line bg-wash p-3"
             >
               <span className="flex items-center gap-3">
-                <span className="grid h-9 w-9 place-items-center rounded-full bg-terracotta/80 font-display text-sm font-black text-parchment">
+                <span className="grid h-9 w-9 place-items-center rounded-full border-3 border-line bg-sky font-display text-sm font-black">
                   {p.nickname.slice(0, 2).toUpperCase()}
                 </span>
                 <span>
-                  <span className="block font-bold">{p.nickname}</span>
-                  <span className="text-xs text-bark/60 dark:text-parchment/60">
+                  <span className="block font-extrabold">{p.nickname}</span>
+                  <span className="text-xs font-bold text-muted">
                     {p.id === room.hostId ? 'Host' : `Player ${idx + 1}`}
                     {p.id === me ? ' · you' : ''}
                   </span>
@@ -179,22 +173,18 @@ function Lobby({
           ))}
         </ul>
         {room.players.length < 2 ? (
-          <p className="mt-3 text-center text-xs text-bark/60 dark:text-parchment/60">
+          <p className="mt-3 text-center text-xs font-bold text-muted">
             Waiting for at least one more player…
           </p>
         ) : null}
       </section>
 
       {isHost ? (
-        <button
-          className="btn-primary w-full"
-          onClick={onStart}
-          disabled={room.players.length < 2}
-        >
-          Start game
+        <button className="btn-sky w-full" onClick={onStart} disabled={room.players.length < 2}>
+          Start Game
         </button>
       ) : (
-        <p className="text-center text-sm text-bark/70 dark:text-parchment/70">
+        <p className="text-center text-sm font-bold text-muted">
           Host will start when everyone's in.
         </p>
       )}
@@ -218,7 +208,6 @@ function Playing({ room, me }: { room: Room; me: string }) {
     return () => window.removeEventListener('keydown', detect);
   }, []);
 
-  // Reset the draft if it's no longer my turn.
   useEffect(() => {
     if (!myTurn) setDraft('');
   }, [myTurn]);
@@ -245,24 +234,24 @@ function Playing({ room, me }: { room: Room; me: string }) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <TurnPill room={room} me={me} />
-      <section className="card p-4 sm:p-6">
-        <GuessRow length={length} guess={myTurn ? draft : ''} active={myTurn} />
-        {!myTurn ? (
-          <p className="mt-3 text-center text-xs uppercase tracking-widest text-bark/60 dark:text-parchment/60">
-            Waiting for {current?.nickname ?? '…'} to guess
-          </p>
-        ) : null}
-        {error ? (
-          <p className="mt-3 text-center text-sm font-bold text-clay">{error}</p>
-        ) : null}
-      </section>
+
+      <GuessRow length={length} guess={myTurn ? draft : ''} active={myTurn} />
+
+      {!myTurn ? (
+        <p className="text-center text-xs font-extrabold uppercase tracking-widest text-muted">
+          Waiting for {current?.nickname ?? '…'} to guess
+        </p>
+      ) : null}
+      {error ? (
+        <p className="text-center text-sm font-extrabold text-amberdeep">{error}</p>
+      ) : null}
 
       <section className="card max-h-72 space-y-2 overflow-auto p-4 sm:p-5">
         <h2 className="label">Guess history</h2>
         {room.history.length === 0 ? (
-          <p className="text-center text-sm text-bark/60 dark:text-parchment/60">
+          <p className="text-center text-sm font-bold text-muted">
             No guesses yet — taking turns.
           </p>
         ) : (
@@ -270,9 +259,9 @@ function Playing({ room, me }: { room: Room; me: string }) {
             {room.history.map((h, idx) => (
               <li
                 key={idx}
-                className="rounded-2xl border-2 border-bark/15 bg-parchment/60 p-2 dark:border-parchment/10 dark:bg-nightbeige/60"
+                className="rounded-2xl border-3 border-line bg-wash p-2"
               >
-                <p className="px-1 pb-1 text-[11px] font-bold uppercase tracking-widest text-bark/60 dark:text-parchment/60">
+                <p className="px-1 pb-1 text-[11px] font-extrabold uppercase tracking-widest text-muted">
                   {h.authorName}
                 </p>
                 <HistoryList history={[h.feedback]} length={length} />
@@ -281,6 +270,25 @@ function Playing({ room, me }: { room: Room; me: string }) {
           </ol>
         )}
       </section>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <button
+          type="button"
+          className="btn-paper"
+          onClick={backspace}
+          disabled={!myTurn || draft.length === 0}
+        >
+          Clear
+        </button>
+        <button
+          type="button"
+          className="btn-sky"
+          onClick={submit}
+          disabled={!myTurn || draft.length !== length}
+        >
+          Lock In Answer
+        </button>
+      </div>
 
       <Keyboard
         history={room.history.map((h) => h.feedback)}
@@ -292,7 +300,7 @@ function Playing({ room, me }: { room: Room; me: string }) {
       />
 
       {myTurn && hwKeyboard ? (
-        <p className="text-center text-xs uppercase tracking-widest text-bark/50 dark:text-parchment/50">
+        <p className="text-center text-xs font-extrabold uppercase tracking-widest text-muted">
           Type a guess and hit Enter
         </p>
       ) : null}
@@ -306,11 +314,7 @@ function TurnPill({ room, me }: { room: Room; me: string }) {
   const mine = cur.id === me;
   return (
     <div className="sticky top-2 z-20 mx-auto w-fit">
-      <div
-        className={`pill animate-slideUp text-sm ${
-          mine ? 'bg-terracotta text-parchment border-clay' : ''
-        }`}
-      >
+      <div className={`pill animate-slideUp text-sm ${mine ? 'bg-sky' : ''}`}>
         <span aria-hidden>{mine ? '🎯' : '⏳'}</span>
         <span>{mine ? 'Your turn' : `${cur.nickname}'s turn`}</span>
       </div>
@@ -336,12 +340,12 @@ function Finished({
   return (
     <div className="space-y-4">
       {iWon ? <Confetti /> : null}
-      <section className={`card p-6 text-center ${iWon ? 'bg-leaf/10' : ''}`}>
+      <section className="card p-6 text-center">
         <p className="label">{iWon ? 'You cracked it' : 'Round over'}</p>
         <p className="mt-2 font-display text-3xl font-black uppercase">
           {winner ? `${winner.nickname} wins!` : 'No winner'}
         </p>
-        <p className="mt-2 text-sm text-bark/70 dark:text-parchment/70">
+        <p className="mt-2 text-sm font-bold text-muted">
           Secret was{' '}
           <span className="font-display text-lg font-black tracking-[0.3em]">{room.secret}</span>
         </p>
@@ -352,7 +356,7 @@ function Finished({
         <ol className="mt-3 space-y-2">
           {room.history.map((h, idx) => (
             <li key={idx}>
-              <p className="px-1 pb-1 text-[11px] font-bold uppercase tracking-widest text-bark/60 dark:text-parchment/60">
+              <p className="px-1 pb-1 text-[11px] font-extrabold uppercase tracking-widest text-muted">
                 {h.authorName}
               </p>
               <HistoryList history={[h.feedback]} length={room.secret.length} />
@@ -363,15 +367,15 @@ function Finished({
 
       <div className="grid gap-3 sm:grid-cols-2">
         {isHost ? (
-          <button className="btn-primary" onClick={onRematch}>
-            Rematch (new code, same room)
+          <button className="btn-sky" onClick={onRematch}>
+            Rematch
           </button>
         ) : (
-          <p className="rounded-2xl border-2 border-bark/15 bg-parchment/60 p-3 text-center text-sm text-bark/70 dark:border-parchment/10 dark:bg-nightbeige/60 dark:text-parchment/70">
+          <p className="rounded-2xl border-3 border-line bg-wash p-3 text-center text-sm font-bold text-muted">
             Waiting for host to rematch…
           </p>
         )}
-        <button className="btn-secondary" onClick={onLeave}>
+        <button className="btn-paper" onClick={onLeave}>
           Leave room
         </button>
       </div>
@@ -385,7 +389,8 @@ function ChatPanel({ room }: { room: Room }) {
   const listRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (open) listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
+    if (open)
+      listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
   }, [room.chat.length, open]);
 
   function send(e: React.FormEvent) {
@@ -398,7 +403,7 @@ function ChatPanel({ room }: { room: Room }) {
   return (
     <>
       <button
-        className="btn-secondary fixed bottom-4 right-4 z-30 h-12 w-12 !p-0 text-xl"
+        className="icon-btn fixed bottom-4 right-4 z-30"
         onClick={() => setOpen((v) => !v)}
         aria-label="Toggle chat"
       >
@@ -418,16 +423,11 @@ function ChatPanel({ room }: { room: Room }) {
             </div>
             <div ref={listRef} className="min-h-[8rem] flex-1 space-y-2 overflow-auto px-1 pb-2">
               {room.chat.length === 0 ? (
-                <p className="text-center text-xs text-bark/60 dark:text-parchment/60">
-                  Say hi to your room.
-                </p>
+                <p className="text-center text-xs font-bold text-muted">Say hi to your room.</p>
               ) : (
                 room.chat.map((m) => (
-                  <div
-                    key={m.id}
-                    className="rounded-2xl border-2 border-bark/15 bg-parchment/70 p-2 dark:border-parchment/10 dark:bg-nightbeige/70"
-                  >
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-bark/60 dark:text-parchment/60">
+                  <div key={m.id} className="rounded-2xl border-3 border-line bg-wash p-2">
+                    <p className="text-[10px] font-extrabold uppercase tracking-widest text-muted">
                       {m.authorName}
                     </p>
                     <p className="text-sm">{m.text}</p>
@@ -443,7 +443,7 @@ function ChatPanel({ room }: { room: Room }) {
                 placeholder="Send a message"
                 maxLength={240}
               />
-              <button className="btn-primary px-4" type="submit" disabled={!text.trim()}>
+              <button className="btn-sky px-4" type="submit" disabled={!text.trim()}>
                 Send
               </button>
             </form>

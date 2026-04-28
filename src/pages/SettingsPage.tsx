@@ -4,12 +4,7 @@ import Toggle from '@/components/Toggle';
 import { useTheme } from '@/state/ThemeContext';
 import { load, save } from '@/lib/storage';
 
-type Prefs = {
-  music: boolean;
-  sfx: boolean;
-  haptics: boolean;
-  colorblind: boolean;
-};
+type Prefs = { music: boolean; sfx: boolean; haptics: boolean; colorblind: boolean };
 const DEF: Prefs = { music: true, sfx: true, haptics: true, colorblind: false };
 
 export default function SettingsPage() {
@@ -27,35 +22,42 @@ export default function SettingsPage() {
   return (
     <PageShell title="Settings" back="/">
       <div className="space-y-3">
-        <section className="card space-y-3 p-4">
+        <section className="card p-4">
           <p className="label">Theme</p>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="mt-2 grid grid-cols-2 gap-2">
             <button
               onClick={() => set('light')}
-              className={`rounded-2xl border-2 p-3 font-bold uppercase ${
-                theme === 'light'
-                  ? 'border-clay bg-terracotta text-parchment'
-                  : 'border-bark/25 bg-parchment dark:border-parchment/15 dark:bg-nightbeige'
-              }`}
+              className={`pick ${theme === 'light' ? 'pick-active' : ''}`}
             >
-              ☀️ Light
+              <span className="text-xl">☀️</span>
+              <span className="font-display text-base font-black">Light</span>
             </button>
             <button
               onClick={() => set('dark')}
-              className={`rounded-2xl border-2 p-3 font-bold uppercase ${
-                theme === 'dark'
-                  ? 'border-clay bg-terracotta text-parchment'
-                  : 'border-bark/25 bg-parchment dark:border-parchment/15 dark:bg-nightbeige'
-              }`}
+              className={`pick ${theme === 'dark' ? 'pick-active' : ''}`}
             >
-              🌙 Dark
+              <span className="text-xl">🌙</span>
+              <span className="font-display text-base font-black">Dark</span>
             </button>
           </div>
         </section>
 
-        <Toggle checked={prefs.music} onChange={(v) => patch({ music: v })} label="Background music" />
-        <Toggle checked={prefs.sfx} onChange={(v) => patch({ sfx: v })} label="Sound effects" />
-        <Toggle checked={prefs.haptics} onChange={(v) => patch({ haptics: v })} label="Haptic feedback" hint="Vibration on mobile devices." />
+        <Toggle
+          checked={prefs.music}
+          onChange={(v) => patch({ music: v })}
+          label="Background music"
+        />
+        <Toggle
+          checked={prefs.sfx}
+          onChange={(v) => patch({ sfx: v })}
+          label="Sound effects"
+        />
+        <Toggle
+          checked={prefs.haptics}
+          onChange={(v) => patch({ haptics: v })}
+          label="Haptic feedback"
+          hint="Vibration on mobile devices."
+        />
         <Toggle
           checked={prefs.colorblind}
           onChange={(v) => patch({ colorblind: v })}

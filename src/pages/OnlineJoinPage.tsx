@@ -60,8 +60,8 @@ export default function OnlineJoinPage() {
   }
 
   return (
-    <PageShell title="Join room" back="/online">
-      <form className="space-y-5" onSubmit={submit}>
+    <PageShell title="Join Room" back="/online">
+      <form className="mx-auto max-w-md space-y-5" onSubmit={submit}>
         <section className="card space-y-5 p-5">
           <div>
             <label className="label" htmlFor="join-nick">
@@ -80,15 +80,12 @@ export default function OnlineJoinPage() {
 
           <div>
             <p className="label">Room code</p>
-            <div
-              className="mt-2 flex justify-between gap-1.5 sm:gap-2"
-              onPaste={onPaste}
-            >
+            <div className="mt-2 flex justify-between gap-1.5 sm:gap-2" onPaste={onPaste}>
               {code.map((ch, i) => (
                 <input
                   key={i}
                   ref={(el) => (refs.current[i] = el)}
-                  className="h-14 w-12 rounded-2xl border-2 border-bark/30 bg-parchment text-center font-display text-2xl font-black uppercase shadow-cottageSm focus:border-clay focus:outline-none focus:ring-4 focus:ring-terracotta/40 dark:border-parchment/15 dark:bg-nightbeige sm:h-16 sm:w-14"
+                  className="h-14 w-12 rounded-2xl border-3 border-line bg-paper text-center font-display text-2xl font-black uppercase shadow-nbSm focus:ring-4 focus:ring-sky/40 sm:h-16 sm:w-14"
                   inputMode="text"
                   autoCapitalize="characters"
                   autoComplete="one-time-code"
@@ -104,18 +101,18 @@ export default function OnlineJoinPage() {
           </div>
 
           {error ? (
-            <p className="rounded-xl border-2 border-clay/40 bg-clay/10 p-3 text-sm font-bold text-clay">
+            <p className="rounded-2xl border-3 border-line bg-amber/30 p-3 text-sm font-extrabold uppercase tracking-wide">
               {error}
             </p>
           ) : null}
         </section>
 
         <button
-          className="btn-primary w-full"
+          className="btn-sky w-full"
           type="submit"
           disabled={code.join('').length < LEN || nickname.trim().length < 2}
         >
-          Join room →
+          Join Room
         </button>
       </form>
     </PageShell>

@@ -15,92 +15,134 @@
     height: 100%;
   }
   body {
-    @apply font-body text-ink bg-cream antialiased;
-    background-image: radial-gradient(circle at 20% 10%, #f1e3c8 0, transparent 35%),
-      radial-gradient(circle at 80% 90%, #ead4af 0, transparent 30%);
-    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"><path d="M6 14c0-2 1-3 2.5-3s2.5 1 2.5 3v-5c0-1.5 1-2.5 2.5-2.5S16 7.5 16 9v6l1-1c1-1 3-1 3 1v5c0 3-2 6-6 6s-7-2-7-6Z" fill="%23fbf6ea" stroke="%235b3a22" stroke-width="1.5" stroke-linejoin="round"/></svg>')
-      4 2, auto;
+    @apply font-body text-ink antialiased;
+    background-color: #f0f0f2;
+    background-image: url('/pattern.svg');
+    background-repeat: repeat;
+    background-size: 240px 240px;
   }
   html.dark body {
-    @apply text-parchment bg-nightcream;
-    background-image: radial-gradient(circle at 20% 10%, #2a1f17 0, transparent 35%),
-      radial-gradient(circle at 80% 90%, #3a2c1f 0, transparent 30%);
-  }
-  button,
-  a,
-  [role='button'] {
-    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"><path d="M9 4c0-1.5 2.5-1.5 2.5 0v8c.5-1 1-1.5 2-1.5 1 0 1.5.5 1.5 1.5v.5c.5-1 1.2-1.4 2-1.4 1 0 1.5.6 1.5 1.6v1c.5-.8 1-1.2 1.7-1.2.9 0 1.3.7 1.3 1.7v5c0 3-2.3 5.5-5.5 5.5s-6-2.5-6-5.5V4Z" fill="%23c0673f" stroke="%235b3a22" stroke-width="1.5" stroke-linejoin="round"/></svg>')
-      6 2, pointer;
+    @apply text-paper;
+    background-color: #16161a;
+    background-image: url('/pattern.svg');
+    background-blend-mode: multiply;
+    filter: none;
   }
   h1,
   h2,
   h3 {
-    @apply font-display tracking-tight uppercase;
+    @apply font-display font-black uppercase tracking-tight;
+  }
+  /* Hide native focus rings; we provide our own neobrutalist ones below. */
+  button:focus,
+  a:focus,
+  input:focus {
+    outline: none;
   }
 }
 
 @layer components {
+  /* Surfaces ------------------------------------------------------------ */
   .card {
-    @apply rounded-3xl border-2 border-bark/20 bg-parchment/85 shadow-cottage backdrop-blur;
+    @apply rounded-3xl border-3 border-line bg-paper shadow-nb;
   }
   html.dark .card {
-    @apply border-parchment/15 bg-nightbeige/80;
-  }
-  .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-bark/30 px-5 py-3 font-bold uppercase tracking-wider shadow-cottageSm transition active:translate-y-[2px] active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed;
-  }
-  .btn-primary {
-    @apply btn bg-terracotta text-parchment border-clay hover:bg-clay;
-  }
-  .btn-secondary {
-    @apply btn bg-beige text-bark hover:bg-sand;
-  }
-  html.dark .btn-secondary {
-    @apply bg-nightsand text-parchment hover:bg-nightbeige;
-  }
-  .btn-ghost {
-    @apply btn bg-transparent border-bark/30 text-bark hover:bg-beige/60;
-  }
-  html.dark .btn-ghost {
-    @apply text-parchment hover:bg-nightsand/60;
+    @apply bg-nightpaper text-paper;
   }
   .pill {
-    @apply inline-flex items-center gap-2 rounded-full border-2 border-bark/25 bg-parchment/80 px-3 py-1.5 text-sm font-bold uppercase tracking-wider shadow-cottageSm;
+    @apply inline-flex items-center gap-2 rounded-full border-3 border-line bg-paper px-3 py-1.5 text-sm font-extrabold uppercase tracking-wider shadow-nbSm;
   }
   html.dark .pill {
-    @apply bg-nightbeige/80 border-parchment/15;
+    @apply bg-nightpaper text-paper;
   }
+
+  /* Buttons ------------------------------------------------------------- */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border-3 border-line px-5 py-3 font-extrabold uppercase tracking-wider shadow-nb transition-transform active:translate-x-[2px] active:translate-y-[2px] active:shadow-nbSm disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .btn-sky {
+    @apply btn bg-sky text-ink;
+  }
+  .btn-meadow {
+    @apply btn bg-meadow text-ink;
+  }
+  .btn-amber {
+    @apply btn bg-amber text-ink;
+  }
+  .btn-paper {
+    @apply btn bg-paper text-ink;
+  }
+  html.dark .btn-paper {
+    @apply bg-nightpaper text-paper;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border-3 border-transparent px-3 py-2 font-extrabold uppercase tracking-wider transition hover:border-line/20;
+  }
+
+  /* Round icon button used in the home dock and back-arrow header. */
+  .icon-btn {
+    @apply inline-flex h-12 w-12 items-center justify-center rounded-full border-3 border-line bg-paper text-xl shadow-nb transition-transform active:translate-x-[2px] active:translate-y-[2px] active:shadow-nbSm;
+  }
+  html.dark .icon-btn {
+    @apply bg-nightpaper text-paper;
+  }
+
+  /* Primary 3-row home buttons ----------------------------------------- */
+  .home-btn {
+    @apply flex w-full items-center justify-center gap-3 rounded-full border-4 border-line py-5 font-display text-xl font-black uppercase tracking-wider shadow-nbLg transition-transform active:translate-x-[3px] active:translate-y-[3px] active:shadow-nb;
+  }
+
+  /* Slot tile ---------------------------------------------------------- */
   .slot {
-    @apply flex h-14 w-12 items-center justify-center rounded-xl border-2 border-bark/30 bg-parchment text-2xl font-display font-black uppercase shadow-cottageSm sm:h-16 sm:w-14 sm:text-3xl;
+    @apply flex h-14 w-14 items-center justify-center rounded-full border-3 border-line bg-paper text-2xl font-black uppercase shadow-nbSm;
   }
-  html.dark .slot {
-    @apply bg-nightbeige border-parchment/20;
+  .slot-empty {
+    @apply border-dashed text-muted;
   }
   .slot-active {
-    @apply ring-4 ring-terracotta/50;
+    @apply ring-4 ring-sky/50;
   }
   .slot-exact {
-    @apply bg-leaf text-parchment border-moss;
+    @apply bg-meadow text-ink;
   }
   .slot-hit {
-    @apply bg-sand text-bark border-clay/60;
+    @apply bg-amber text-ink;
   }
+  html.dark .slot {
+    @apply bg-nightpaper text-paper;
+  }
+
+  /* Keyboard ----------------------------------------------------------- */
   .key {
-    @apply flex h-11 min-w-[2rem] flex-1 items-center justify-center rounded-lg border-2 border-bark/30 bg-parchment text-sm font-bold uppercase shadow-cottageSm sm:h-12 sm:text-base active:translate-y-[1px] active:shadow-none;
+    @apply flex h-11 min-w-[2.25rem] flex-1 items-center justify-center rounded-full border-3 border-line bg-paper text-sm font-extrabold uppercase shadow-nbSm transition-transform active:translate-x-[1px] active:translate-y-[1px] sm:h-12 sm:min-w-[2.5rem] sm:text-base;
   }
   html.dark .key {
-    @apply bg-nightbeige border-parchment/15;
+    @apply bg-nightpaper text-paper;
   }
+
+  /* Form ---------------------------------------------------------------- */
   .input {
-    @apply w-full rounded-2xl border-2 border-bark/25 bg-parchment px-4 py-3 font-bold tracking-wider text-bark placeholder:text-bark/40 focus:outline-none focus:ring-4 focus:ring-terracotta/40;
+    @apply w-full rounded-full border-3 border-line bg-paper px-5 py-3 font-bold tracking-wide text-ink shadow-nbSm placeholder:text-muted focus:ring-4 focus:ring-sky/40;
   }
   html.dark .input {
-    @apply bg-nightbeige border-parchment/15 text-parchment placeholder:text-parchment/40;
+    @apply bg-nightpaper text-paper;
   }
   .label {
-    @apply text-xs font-extrabold uppercase tracking-[0.18em] text-bark/70;
+    @apply text-[11px] font-extrabold uppercase tracking-[0.18em] text-muted;
   }
   html.dark .label {
-    @apply text-parchment/70;
+    @apply text-paper/70;
+  }
+
+  /* Mode + repeats selector cards (used in solo/online setup) ---------- */
+  .pick {
+    @apply flex flex-col items-center gap-1 rounded-2xl border-3 border-line bg-paper px-4 py-5 text-center font-extrabold uppercase tracking-wider shadow-nbSm transition-transform active:translate-x-[2px] active:translate-y-[2px];
+  }
+  .pick-active {
+    @apply bg-wash;
+  }
+  html.dark .pick,
+  html.dark .pick-active {
+    @apply bg-nightpaper text-paper;
   }
 }

@@ -5,32 +5,40 @@ export default {
   theme: {
     extend: {
       colors: {
-        cream: '#f7efe1',
-        beige: '#e9d9bd',
-        sand: '#d9c39a',
-        terracotta: '#c0673f',
-        clay: '#a04e2a',
-        bark: '#5b3a22',
-        moss: '#7a8a4b',
-        leaf: '#9bab6a',
-        ink: '#2a1a10',
-        parchment: '#fbf6ea',
-        nightcream: '#1f1812',
-        nightbeige: '#2c241c',
-        nightsand: '#3a2f24',
+        ink: '#0d0d0d',
+        paper: '#ffffff',
+        wash: '#f5f5f6',
+        line: '#0d0d0d',
+        muted: '#6b6b6f',
+        // Action colors picked to match the Lovable mockups.
+        sky: '#5b9bd5',
+        skydeep: '#3d7ec2',
+        meadow: '#5ec569',
+        meadowdeep: '#3fa84a',
+        amber: '#f5a524',
+        amberdeep: '#d8851a',
+        gold: '#ffd866',
+        nightpaper: '#16161a',
+        nightwash: '#1f1f24',
       },
       fontFamily: {
-        display: ['"Fraunces"', 'Georgia', 'serif'],
+        display: ['"Nunito"', 'system-ui', 'sans-serif'],
         body: ['"Nunito"', 'system-ui', 'sans-serif'],
       },
+      borderWidth: {
+        3: '3px',
+        4: '4px',
+      },
       boxShadow: {
-        cottage: '0 6px 0 0 rgba(91, 58, 34, 0.3), 0 10px 24px -8px rgba(91, 58, 34, 0.35)',
-        cottageSm: '0 3px 0 0 rgba(91, 58, 34, 0.3), 0 6px 14px -6px rgba(91, 58, 34, 0.3)',
+        // Sharp neobrutalist offset, no blur.
+        nb: '4px 4px 0 0 #0d0d0d',
+        nbSm: '3px 3px 0 0 #0d0d0d',
+        nbLg: '6px 6px 0 0 #0d0d0d',
       },
       keyframes: {
         pop: {
-          '0%': { transform: 'scale(0.85)', opacity: '0' },
-          '60%': { transform: 'scale(1.05)', opacity: '1' },
+          '0%': { transform: 'scale(0.92)', opacity: '0' },
+          '60%': { transform: 'scale(1.04)', opacity: '1' },
           '100%': { transform: 'scale(1)', opacity: '1' },
         },
         flip: {
@@ -39,7 +47,7 @@ export default {
           '100%': { transform: 'rotateX(0)' },
         },
         slideUp: {
-          '0%': { transform: 'translateY(12px)', opacity: '0' },
+          '0%': { transform: 'translateY(10px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
         },
         confetti: {
@@ -50,7 +58,7 @@ export default {
       animation: {
         pop: 'pop 220ms ease-out',
         flip: 'flip 500ms ease-in-out',
-        slideUp: 'slideUp 280ms ease-out',
+        slideUp: 'slideUp 240ms ease-out',
         confetti: 'confetti 2.4s linear forwards',
       },
     },

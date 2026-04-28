@@ -7,13 +7,26 @@ import { scoreGuess, type GuessFeedback } from '@/lib/score';
 type Props = {
   secret: string;
   maxGuesses?: number;
+  modeLabel?: string;
+  hintsAvailable?: number;
+  onUseHint?: () => void;
   disabled?: boolean;
   onGuess?: (fb: GuessFeedback) => void;
   onWin?: (fb: GuessFeedback, history: GuessFeedback[]) => void;
   onLose?: (history: GuessFeedback[]) => void;
 };
 
-export default function GameBoard({ secret, maxGuesses, disabled, onGuess, onWin, onLose }: Props) {
+export default function GameBoard({
+  secret,
+  maxGuesses,
+  modeLabel,
+  hintsAvailable = 0,
+  onUseHint,
+  disabled,
+  onGuess,
+  onWin,
+  onLose,
+}: Props) {
   const length = secret.length;
   const [current, setCurrent] = useState('');
   const [history, setHistory] = useState<GuessFeedback[]>([]);
@@ -21,8 +34,6 @@ export default function GameBoard({ secret, maxGuesses, disabled, onGuess, onWin
     history.some((h) => h.exact === length) ||
     (maxGuesses !== undefined && history.length >= maxGuesses);
 
-  // Hardware keyboard detection — once any physical key is pressed we
-  // auto-hide the on-screen keyboard for the rest of the session.
   const [hwKeyboard, setHwKeyboard] = useState(false);
   useEffect(() => {
     function detect(e: KeyboardEvent) {
@@ -52,24 +63,78 @@ export default function GameBoard({ secret, maxGuesses, disabled, onGuess, onWin
     else if (maxGuesses !== undefined && next.length >= maxGuesses) onLose?.(next);
   }
 
+  const guessCount = history.length;
+  const guessLimitLabel = maxGuesses ?? 10;
+
   return (
     <div className="space-y-5">
-      <div className="card space-y-4 p-4 sm:p-6">
-        <GuessRow length={length} guess={current} active={!finished} />
-        {maxGuesses !== undefined ? (
-          <p className="text-center text-xs font-bold uppercase tracking-widest text-bark/60 dark:text-parchment/60">
-            Guess {Math.min(history.length + 1, maxGuesses)} / {maxGuesses}
-          </p>
-        ) : null}
+      {/* Status pill row -------------------------------------------------- */}
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        {modeLabel ? <span className="pill">{modeLabel}</span> : null}
+        <span className="pill">
+          Guess {Math.min(guessCount + 1, guessLimitLabel)} / {guessLimitLabel}
+        </span>
+        <button
+          type="button"
+          className="pill disabled:opacity-50"
+          disabled={!onUseHint || hintsAvailable <= 0}
+          onClick={onUseHint}
+        >
+          <span aria-hidden>👁</span>
+          Hints {hintsAvailable > 0 ? `· ${hintsAvailable}` : ''}
+        </button>
       </div>
 
-      <section className="card max-h-72 space-y-2 overflow-auto p-4 sm:p-5">
-        <h2 className="text-sm font-extrabold uppercase tracking-widest text-bark/70 dark:text-parchment/70">
-          History
+      {/* Headline + slot row --------------------------------------------- */}
+      <div className="text-center">
+        <h2 className="font-display text-2xl font-black uppercase">
+          {finished
+            ? history[history.length - 1]?.exact === length
+              ? 'You cracked it!'
+              : 'Out of guesses'
+            : guessCount === 0
+              ? 'Enter your first guess!'
+              : 'Keep going!'}
         </h2>
-        <HistoryList history={history} length={length} />
-      </section>
+        <p className="mt-1 text-sm font-bold uppercase tracking-wider text-muted">
+          {finished ? 'See history below' : 'Start cracking the code'}
+        </p>
+      </div>
 
+      <GuessRow length={length} guess={current} active={!finished} />
+
+      {/* History --------------------------------------------------------- */}
+      {history.length > 0 ? (
+        <section className="card max-h-72 space-y-2 overflow-auto p-4 sm:p-5">
+          <h3 className="label">History</h3>
+          <HistoryList history={history} length={length} />
+        </section>
+      ) : null}
+
+      {/* Action row ----------------------------------------------------- */}
+      <p className="text-center text-xs font-extrabold uppercase tracking-widest text-muted">
+        Enter any {length} letters (A–Z)
+      </p>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <button
+          type="button"
+          className="btn-paper"
+          onClick={onUseHint}
+          disabled={!onUseHint || hintsAvailable <= 0 || finished}
+        >
+          Check Hint
+        </button>
+        <button
+          type="button"
+          className="btn-sky"
+          onClick={submit}
+          disabled={current.length !== length || finished || disabled}
+        >
+          Lock In Answer
+        </button>
+      </div>
+
+      {/* Keyboard ------------------------------------------------------- */}
       <Keyboard
         history={history}
         onKey={appendKey}
@@ -80,7 +145,7 @@ export default function GameBoard({ secret, maxGuesses, disabled, onGuess, onWin
       />
 
       {hwKeyboard ? (
-        <p className="text-center text-xs uppercase tracking-widest text-bark/50 dark:text-parchment/50">
+        <p className="text-center text-xs uppercase tracking-widest text-muted">
           Hardware keyboard detected · type to play
         </p>
       ) : null}

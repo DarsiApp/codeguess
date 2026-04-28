@@ -1,7 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageShell from '@/components/PageShell';
-import Toggle from '@/components/Toggle';
 import GameBoard from '@/components/GameBoard';
 import Confetti from '@/components/Confetti';
 import { generateSecret, type CodeMode } from '@/lib/words';
@@ -28,7 +27,6 @@ export default function SoloPage() {
 
   function handleWin(_fb: GuessFeedback, history: GuessFeedback[]) {
     setShowWin(true);
-    // Brief pause so the player sees the green row before navigating.
     setTimeout(() => {
       nav('/solo/results', {
         state: {
@@ -43,9 +41,33 @@ export default function SoloPage() {
     }, 1600);
   }
 
-  if (phase === 'setup') return <SetupView mode={mode} setMode={setMode} allowRepeats={allowRepeats} setAllowRepeats={setAllowRepeats} onStart={startGame} />;
+  if (phase === 'setup') {
+    return (
+      <SetupView
+        mode={mode}
+        setMode={setMode}
+        allowRepeats={allowRepeats}
+        setAllowRepeats={setAllowRepeats}
+        onStart={startGame}
+      />
+    );
+  }
 
-  return <PlayView secret={secret} mode={mode} allowRepeats={allowRepeats} onWin={handleWin} showWin={showWin} onAbandon={() => setPhase('setup')} />;
+  return (
+    <PageShell title="Solo" back={false}>
+      {showWin ? <Confetti /> : null}
+      <GameBoard
+        secret={secret}
+        modeLabel={mode === 'word' ? 'Word' : 'Code'}
+        onWin={handleWin}
+      />
+      <div className="mt-6 flex justify-center">
+        <button className="btn-paper" onClick={() => setPhase('setup')}>
+          New setup
+        </button>
+      </div>
+    </PageShell>
+  );
 }
 
 function SetupView({
@@ -63,109 +85,87 @@ function SetupView({
 }) {
   return (
     <PageShell title="Solo" back="/">
-      <div className="space-y-5">
-        <section className="card p-5">
-          <p className="label">New game setup</p>
-          <h2 className="mt-1 font-display text-2xl font-black uppercase">Pick your puzzle</h2>
-          <p className="mt-1 text-sm text-bark/70 dark:text-parchment/70">
-            Choose the kind of secret you want to crack. You can play unlimited guesses in solo.
-          </p>
+      <section className="card mx-auto max-w-md p-6">
+        <h2 className="text-center font-display text-2xl font-black uppercase">
+          Game Setup
+        </h2>
+        <p className="mt-1 text-center text-sm font-bold text-muted">
+          Choose your mode and start cracking!
+        </p>
 
-          <div className="mt-5 grid grid-cols-2 gap-3">
-            <ModeCard
-              active={mode === 'word'}
-              title="Word"
-              emoji="🌼"
-              hint="A real five-letter word"
-              onClick={() => setMode('word')}
-            />
-            <ModeCard
-              active={mode === 'code'}
-              title="Code"
-              emoji="🔣"
-              hint="Random letters, max chaos"
-              onClick={() => setMode('code')}
-            />
-          </div>
+        <p className="label mt-6 text-center">Mode</p>
+        <div className="mt-3 grid grid-cols-2 gap-3">
+          <PickCard
+            active={mode === 'word'}
+            onClick={() => setMode('word')}
+            emoji="📖"
+            title="Word"
+            sub="Real 5-letter words"
+          />
+          <PickCard
+            active={mode === 'code'}
+            onClick={() => setMode('code')}
+            emoji="🔀"
+            title="Code"
+            sub="Any 5 letters A–Z"
+          />
+        </div>
 
-          <div className="mt-4">
-            <Toggle
-              checked={allowRepeats}
-              onChange={setAllowRepeats}
-              label="Allow repeated letters"
-              hint={mode === 'word' ? 'Unlocks words like APPLE or BERRY.' : 'Otherwise every letter is unique.'}
-            />
-          </div>
-        </section>
+        <hr className="my-6 border-line/15" />
 
-        <button className="btn-primary w-full text-base" onClick={onStart}>
-          Start game →
+        <p className="label text-center">Letter Repeats</p>
+        <div className="mt-3 grid grid-cols-2 gap-3">
+          <PickCard
+            active={allowRepeats}
+            onClick={() => setAllowRepeats(true)}
+            title="Allow"
+            sub="Letters can repeat"
+          />
+          <PickCard
+            active={!allowRepeats}
+            onClick={() => setAllowRepeats(false)}
+            title="Unique"
+            sub="All letters unique"
+          />
+        </div>
+
+        <button className="btn-sky mt-7 w-full text-base" onClick={onStart}>
+          Start Game
         </button>
-      </div>
+      </section>
     </PageShell>
   );
 }
 
-function ModeCard({
+function PickCard({
   active,
-  title,
-  emoji,
-  hint,
   onClick,
+  emoji,
+  title,
+  sub,
 }: {
   active: boolean;
-  title: string;
-  emoji: string;
-  hint: string;
   onClick: () => void;
+  emoji?: string;
+  title: string;
+  sub: string;
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
-      className={`flex flex-col items-start gap-1 rounded-2xl border-2 p-4 text-left shadow-cottageSm transition ${
-        active
-          ? 'border-clay bg-terracotta text-parchment'
-          : 'border-bark/25 bg-parchment hover:bg-beige dark:border-parchment/15 dark:bg-nightbeige dark:hover:bg-nightsand'
-      }`}
+      className={`pick ${active ? 'pick-active' : ''}`}
+      aria-pressed={active}
     >
-      <span className="text-2xl" aria-hidden>
-        {emoji}
+      {emoji ? (
+        <span className="text-2xl" aria-hidden>
+          {emoji}
+        </span>
+      ) : null}
+      <span className="font-display text-lg font-black">{title}</span>
+      <span className="text-[11px] font-bold normal-case tracking-normal text-muted">
+        {sub}
       </span>
-      <span className="font-display text-lg font-black uppercase tracking-wide">{title}</span>
-      <span className={`text-xs ${active ? 'text-parchment/80' : 'text-bark/60 dark:text-parchment/60'}`}>{hint}</span>
     </button>
-  );
-}
-
-function PlayView({
-  secret,
-  mode,
-  allowRepeats,
-  onWin,
-  showWin,
-  onAbandon,
-}: {
-  secret: string;
-  mode: CodeMode;
-  allowRepeats: boolean;
-  onWin: (fb: GuessFeedback, history: GuessFeedback[]) => void;
-  showWin: boolean;
-  onAbandon: () => void;
-}) {
-  const subtitle = useMemo(
-    () => `${mode === 'word' ? 'Word mode' : 'Code mode'} · ${allowRepeats ? 'repeats on' : 'unique letters'}`,
-    [mode, allowRepeats],
-  );
-  return (
-    <PageShell title="Solo" back={false}>
-      <div className="mb-3 flex items-center justify-between">
-        <p className="label">{subtitle}</p>
-        <button className="btn-ghost px-3 py-2 text-xs" onClick={onAbandon}>
-          New setup
-        </button>
-      </div>
-      {showWin ? <Confetti /> : null}
-      <GameBoard secret={secret} onWin={onWin} />
-    </PageShell>
   );
 }

@@ -9,32 +9,25 @@ type Props = {
 
 export default function GuessRow({ length, guess = '', feedback, active }: Props) {
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className="flex items-center justify-center gap-3">
       {Array.from({ length }, (_, i) => {
         const ch = feedback ? feedback.guess[i] : guess[i] ?? '';
         const status = feedback?.perSlot[i];
-        const cls =
-          status === 'exact'
-            ? 'slot slot-exact animate-flip'
-            : status === 'hit'
-              ? 'slot slot-hit animate-flip'
-              : `slot ${active && i === guess.length ? 'slot-active' : ''}`;
+        let cls = 'slot';
+        if (status === 'exact') cls += ' slot-exact animate-flip';
+        else if (status === 'hit') cls += ' slot-hit animate-flip';
+        else if (!ch) cls += ' slot-empty';
+        if (!feedback && active && i === guess.length) cls += ' slot-active';
         return (
-          <div key={i} className={cls} style={status ? { animationDelay: `${i * 80}ms` } : undefined}>
-            {ch}
+          <div
+            key={i}
+            className={cls}
+            style={status ? { animationDelay: `${i * 80}ms` } : undefined}
+          >
+            {ch || (!feedback ? '?' : '')}
           </div>
         );
       })}
-      {feedback ? (
-        <div className="ml-3 hidden flex-col items-center gap-1 sm:flex">
-          <span className="pill bg-leaf/20 border-moss/40 text-bark dark:text-parchment">
-            ✓ {feedback.exact}
-          </span>
-          <span className="pill bg-sand/40 border-clay/40 text-bark dark:text-parchment">
-            ◐ {feedback.hits}
-          </span>
-        </div>
-      ) : null}
     </div>
   );
 }

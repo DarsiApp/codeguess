@@ -16,14 +16,19 @@ export default function OnlineCreatePage() {
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    const room = createRoom({ nickname: nickname.trim() || 'Host', isPublic, mode, allowRepeats });
+    const room = createRoom({
+      nickname: nickname.trim() || 'Host',
+      isPublic,
+      mode,
+      allowRepeats,
+    });
     nav(`/online/game/${room.code}`);
   }
 
   return (
-    <PageShell title="Create room" back="/online">
-      <form className="space-y-5" onSubmit={submit}>
-        <section className="card space-y-4 p-5">
+    <PageShell title="Create Room" back="/online">
+      <form className="mx-auto max-w-md space-y-5" onSubmit={submit}>
+        <section className="card space-y-5 p-5">
           <div>
             <label className="label" htmlFor="nick">
               Your nickname
@@ -42,12 +47,12 @@ export default function OnlineCreatePage() {
           <div>
             <p className="label">Puzzle mode</p>
             <div className="mt-2 grid grid-cols-2 gap-2">
-              <ChipButton active={mode === 'word'} onClick={() => setMode('word')}>
-                🌼 Word
-              </ChipButton>
-              <ChipButton active={mode === 'code'} onClick={() => setMode('code')}>
-                🔣 Code
-              </ChipButton>
+              <Chip active={mode === 'word'} onClick={() => setMode('word')}>
+                📖 Word
+              </Chip>
+              <Chip active={mode === 'code'} onClick={() => setMode('code')}>
+                🔀 Code
+              </Chip>
             </div>
           </div>
 
@@ -69,15 +74,15 @@ export default function OnlineCreatePage() {
           />
         </section>
 
-        <button className="btn-primary w-full" type="submit" disabled={nickname.trim().length < 2}>
-          Create room →
+        <button className="btn-sky w-full" type="submit" disabled={nickname.trim().length < 2}>
+          Create Room
         </button>
       </form>
     </PageShell>
   );
 }
 
-function ChipButton({
+function Chip({
   active,
   onClick,
   children,
@@ -90,13 +95,9 @@ function ChipButton({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-2xl border-2 px-4 py-3 text-sm font-bold uppercase tracking-wider shadow-cottageSm transition ${
-        active
-          ? 'border-clay bg-terracotta text-parchment'
-          : 'border-bark/25 bg-parchment hover:bg-beige dark:border-parchment/15 dark:bg-nightbeige dark:hover:bg-nightsand'
-      }`}
+      className={`pick ${active ? 'pick-active' : ''}`}
     >
-      {children}
+      <span className="font-display text-lg font-black">{children}</span>
     </button>
   );
 }
